@@ -57,3 +57,9 @@ The current version includes **CSS-only styling inspired by React Bits**—for e
 ## Disclaimer
 
 This is an unofficial fan-made project and is not affiliated with, endorsed by, or sponsored by 2K or the NBA. NBA 2K and related names are trademarks of their respective owners. Badge eligibility and game mechanics may differ from the live game or change with updates.
+
+
+Weakness progression ceilings (based on original starting attribute): 25–39 → 70; 40–49 → 75; 50–64 → 80; 65–69 → 85. Attributes starting at 70 or above retain a ceiling of 99. The XP tab displays each attribute’s starting rating and career ceiling, and upgrades cannot exceed that ceiling.
+
+
+Durability is still available as an attribute for injury-story roleplay, but it is excluded from the 2,650-point build budget. Adjusting Durability does not spend or refund build points.
