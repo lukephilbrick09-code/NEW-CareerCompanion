@@ -615,7 +615,12 @@ body.dashboard-open #sidebar-dashboard-shell{overflow:visible!important;max-heig
   <div class="rail-brand">
     <h1>MyNBA 2K27 <button class="sm" id="gm" aria-label="Open settings" title="Settings">⚙</button></h1>
     <div id="cur" class="r"></div>
-    <div id="mn" class="hide"><div class="badge glass-panel" style="display:block"><b>Careers</b><div id="cs"></div><p><button class="sm pri" id="cn">New career</button> <span class="r">Up to 8. Each career has its own build, XP, games and seasons.</span></p><b>Theme</b><p class="sub">Choose a theme; your choice is remembered in this browser.</p><p><button class="sm" data-th="light">Light mode</button> <button class="sm" data-th="dark">Dark mode</button></p><h3 style="color:var(--tx)">Backup</h3><p class="sub">Export a complete JSON save or a readable summary. Import previews a save before you confirm replacing current careers.</p><p><button class="sm pri" id="be">Export save (.json)</button> <button class="sm" id="bsum">Export career summary (.txt)</button></p><input id="bfile" type="file" accept=".json,application/json" style="width:100%;margin:6px 0"><p><button class="sm" id="bimportfile">Preview selected save</button> <button class="sm" id="bi">Preview pasted JSON</button> <span class="msg" id="bm"></span></p><textarea id="bk" rows="3" placeholder="Optional: paste JSON save here" style="width:100%;background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:8px;padding:8px"></textarea><div id="importPreview" class="badge hide" style="display:block;margin-top:8px"></div><p id="importActions" class="hide"><button class="sm pri" id="bconfirm">Confirm import and replace current data</button> <button class="sm" id="bcancel">Cancel</button></p><button class="sm" id="tutorialReplay" style="margin-top:10px">Replay tutorial</button> <span class="r">Tutorial appears once on first launch.</span></div></div>
+    <div id="mn" class="hide"><div class="badge glass-panel" style="display:block"><b>Careers</b><div id="cs"></div><p><button class="sm pri" id="cn">New career</button> <span class="r">Up to 8. Each career has its own build, XP, games and seasons.</span></p><b>Theme</b><p class="sub">Choose a theme; your choice is remembered in this browser.</p><p><button class="sm" data-th="light">Light mode</button> <button class="sm" data-th="dark">Dark mode</button></p><h3 style="color:var(--tx)">Sync between computers</h3><p class="sub">No login. Paste your Supabase URL and anon key once on each computer. The same sync code keeps them on one save. Local save still works if you are offline.</p>
+<p><input id="sb_url" placeholder="https://xxxx.supabase.co" value="https://wtgzrushrhdwxplirxxp.supabase.co" style="width:100%;margin:4px 0;background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:8px;padding:8px">
+<input id="sb_key" placeholder="publishable key" value="sb_publishable_UnREb-1E3qNUxlewH8P1ug_mKQgHi6v" style="width:100%;margin:4px 0;background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:8px;padding:8px">
+<input id="sb_code" placeholder="sync code, same on both computers" style="width:100%;margin:4px 0;background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:8px;padding:8px"></p>
+<p><button class="sm pri" id="sb_save" type="button">Save sync settings</button> <button class="sm" id="sb_now" type="button">Sync now</button> <span class="msg" id="sb_status"></span></p>
+<h3 style="color:var(--tx)">Backup</h3><p class="sub">Export a complete JSON save or a readable summary. Import previews a save before you confirm replacing current careers.</p><p><button class="sm pri" id="be">Export save (.json)</button> <button class="sm" id="bsum">Export career summary (.txt)</button></p><input id="bfile" type="file" accept=".json,application/json" style="width:100%;margin:6px 0"><p><button class="sm" id="bimportfile">Preview selected save</button> <button class="sm" id="bi">Preview pasted JSON</button> <span class="msg" id="bm"></span></p><textarea id="bk" rows="3" placeholder="Optional: paste JSON save here" style="width:100%;background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:8px;padding:8px"></textarea><div id="importPreview" class="badge hide" style="display:block;margin-top:8px"></div><p id="importActions" class="hide"><button class="sm pri" id="bconfirm">Confirm import and replace current data</button> <button class="sm" id="bcancel">Cancel</button></p><button class="sm" id="tutorialReplay" style="margin-top:10px">Replay tutorial</button> <span class="r">Tutorial appears once on first launch.</span></div></div>
     <p class="sub rail-description">Build attributes, badges and Key Games. Badges ignore height limits. <a href="https://www.2kratings.com/" target="_blank" rel="noopener">2K Ratings</a></p>
   </div>
   <div class="rail-tabs glass-panel menu-collapsed"><div class="rail-section-label">MENU</div><button type="button" id="rail_menu_toggle" class="rail-menu-toggle" aria-expanded="false" aria-controls="rail_page_nav"><span>Menu</span><span class="rail-menu-chevron">⌄</span></button>
@@ -841,7 +846,64 @@ let pendingBoxscorePhoto='';
 const REN={'Close Shot':'Shot Close','Layup':'Driving Layup','Three-Point':'3 Pointer','Pass Accuracy':'Passing Accuracy','Vision':'Pass Vision','Interior D':'Interior Defense','Perimeter D':'Perimeter Defense','Help D IQ':'Help Defense IQ','Off. Consistency':'Offensive Consistency','Def. Consistency':'Defensive Consistency','Off. Rebound':'Offensive Rebound','Def. Rebound':'Defensive Rebound'};
 function migrate(){['st','bo'].forEach(k=>{const o=S[k]||{};Object.keys(REN).forEach(a=>{if(typeof o[a]==='number'){if(typeof o[REN[a]]!=='number')o[REN[a]]=o[a];delete o[a]}})})}
 migrate();ALL.forEach(a=>{if(typeof S.st[a]!=="number")S.st[a]=25;if(typeof S.bo[a]!=="number")S.bo[a]=0});
-const save=()=>{try{DB.slots[DB.cur].s=S;localStorage.setItem("mynba27c",JSON.stringify(DB))}catch(e){}if(typeof drawCareerDashboard==='function'&&document.getElementById('career_dashboard'))drawCareerDashboard()};
+const SB_STORE='mynba27_supabase';
+function sbConfig(){try{return JSON.parse(localStorage.getItem(SB_STORE)||'null')||{}}catch(e){return {}}}
+function sbReady(){const c=sbConfig();return !!(c.url&&c.key&&c.code)}
+function sbStatus(t){const el=$('#sb_status');if(el)el.textContent=t||''}
+let sbTimer=null,sbPulling=false;
+async function sbPush(){
+  if(!sbReady()||sbPulling)return;
+  const c=sbConfig();
+  const body={id:c.code,payload:DB,updated_at:new Date().toISOString()};
+  sbStatus('Syncing…');
+  try{
+    const res=await fetch(c.url.replace(/\/$/,'')+'/rest/v1/career_save?on_conflict=id',{
+      method:'POST',
+      headers:{apikey:c.key,Authorization:'Bearer '+c.key,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},
+      body:JSON.stringify(body)
+    });
+    sbStatus(res.ok?'Synced '+new Date().toLocaleTimeString():'Sync failed ('+res.status+')');
+  }catch(e){sbStatus('Offline. Saved on this computer.')}
+}
+function sbSchedule(){if(!sbReady())return;clearTimeout(sbTimer);sbTimer=setTimeout(sbPush,1200)}
+async function sbPull(force){
+  if(!sbReady()){sbStatus('Add URL, key and sync code first.');return}
+  const c=sbConfig();
+  sbStatus('Checking cloud save…');
+  try{
+    const res=await fetch(c.url.replace(/\/$/,'')+'/rest/v1/career_save?id=eq.'+encodeURIComponent(c.code)+'&select=payload,updated_at',{
+      headers:{apikey:c.key,Authorization:'Bearer '+c.key}
+    });
+    if(!res.ok){sbStatus('Sync failed ('+res.status+')');return}
+    const rows=await res.json();
+    const row=rows&&rows[0];
+    if(!row||!row.payload){sbStatus('No cloud save yet. This computer will create it.');sbPush();return}
+    const remoteAt=Date.parse(row.updated_at)||0;
+    const localAt=Date.parse(DB.syncedAt)||0;
+    if(!force&&remoteAt<=localAt){sbStatus('Already up to date.');return}
+    sbPulling=true;
+    DB=row.payload;
+    DB.syncedAt=row.updated_at;
+    localStorage.setItem('mynba27c',JSON.stringify(DB));
+    sbPulling=false;
+    if(typeof useSlot==='function')useSlot();
+    sbStatus('Loaded cloud save.');
+  }catch(e){sbPulling=false;sbStatus('Offline. Using this computer’s save.')}
+}
+function sbFillForm(){
+  const c=sbConfig();
+  if($('#sb_url'))$('#sb_url').value=c.url||'';
+  if($('#sb_key'))$('#sb_key').value=c.key||'';
+  if($('#sb_code'))$('#sb_code').value=c.code||'';
+}
+function sbSaveSettings(){
+  const cfg={url:($('#sb_url')?.value||'').trim(),key:($('#sb_key')?.value||'').trim(),code:($('#sb_code')?.value||'').trim()};
+  if(!cfg.url||!cfg.key||!cfg.code){sbStatus('Need URL, anon key and a sync code.');return}
+  localStorage.setItem(SB_STORE,JSON.stringify(cfg));
+  sbStatus('Settings saved.');
+  sbPull(true);
+}
+save=()=>{try{DB.syncedAt=new Date().toISOString();DB.slots[DB.cur].s=S;localStorage.setItem("mynba27c",JSON.stringify(DB));sbSchedule()}catch(e){}if(typeof drawCareerDashboard==='function'&&document.getElementById('career_dashboard'))drawCareerDashboard()};
 const challengeXP=()=>keyGameXP();
 const performanceFor=l=>{const fgPct=(l.fga||0)?(l.fgm||0)/(l.fga||1)*100:(l.fgp||0);const efficiency=(l.fga||0)?Math.max(-8,Math.min(8,(fgPct-45)*.4)):0;const score=(l.pts||0)+1.2*(l.reb||0)+1.5*(l.ast||0)+2*(l.stl||0)+2*(l.blk||0)-1.5*(l.tov||0)+efficiency;if(!(l.pts||l.reb||l.ast||l.stl||l.blk||l.fga||l.fgm))return 0;return Math.round(Math.max(50,Math.min(250,score*3.5)))};
 const gamePerformanceXP=()=> (S.lg||[]).reduce((n,e)=>n+(Number.isFinite(e.performanceXP)?e.performanceXP:performanceFor(e.l||{})),0);
@@ -2708,6 +2770,11 @@ const baseLoadGameForm=loadGameForm;loadGameForm=function(){baseLoadGameForm();c
 // Downloadable save plus readable summary; imports are validated and previewed before confirmation.
 function downloadText(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function currentCareerSummary(){const logs=orderedGames(),wins=logs.filter(e=>e.l.win).length,tot=k=>logs.reduce((n,e)=>n+(e.l[k]||0),0),badges=Object.entries(S.pk||{}).map(([name,t])=>TN[t]+' · '+name);return ['MyNBA 2K27 Creator — Career Summary','====================================','Career: '+(DB.slots[DB.cur]?.n||'Career'),'Build: '+(S.bn||'Unnamed build'),'Position: '+(S.ap||'SG'),'Attribute points (base): '+total()+' / '+BASE,'XP earned: '+earned()+' total ('+keyGameXP()+' Key Game XP)','XP spent: '+S.xs,'XP available: '+avail(),'','KEY GAMES',...(S.kg||[]).slice().sort((a,b)=>a.gameNo-b.gameNo).map(g=>'Game '+g.gameNo+' — '+kgLabel(g)+' ['+g.tier+']: '+(g.done?'COMPLETED':'not completed')),'','GAME LOG','Games logged: '+logs.length,'Record: '+wins+'-'+(logs.length-wins),'Points: '+tot('pts')+' | Rebounds: '+tot('reb')+' | Assists: '+tot('ast'),'Steals: '+tot('stl')+' | Blocks: '+tot('blk')+' | Turnovers: '+tot('tov'),'','EQUIPPED BADGES',...(badges.length?badges:['None selected']),'','SEASONS IN CAREER STATS: '+(S.ld||[]).length,'Exported: '+new Date().toLocaleString()].join('\n')}
+
+$('#sb_save')&&($('#sb_save').onclick=sbSaveSettings);
+$('#sb_now')&&($('#sb_now').onclick=function(){sbPull(true)});
+sbFillForm();
+setTimeout(function(){if(sbReady())sbPull(false)},400);
 $('#be').onclick=()=>{save();downloadText('mynba-2k27-save-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(DB,null,2),'application/json');$('#bm').textContent='JSON save downloaded.'};
 $('#bsum').onclick=()=>{save();downloadText('mynba-2k27-career-summary-'+new Date().toISOString().slice(0,10)+'.txt',currentCareerSummary(),'text/plain;charset=utf-8');$('#bm').textContent='Readable summary downloaded.'};
 let pendingImport=null;
